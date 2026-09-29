@@ -1,0 +1,17 @@
+{
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "logo_width": 150,
+      "color_primary": "#1f5eff",
+      "color_dark": "#0a1a44",
+      "color_accent": "#5ec8ff",
+      "color_background": "#f4f7ff",
+      "color_text": "#0d1530",
+      "color_sale": "#ff4d6d",
+      "card_show_vendor": false,
+      "card_quick_add": true,
+      "low_stock_threshold": 3
+    }
+  }
+}

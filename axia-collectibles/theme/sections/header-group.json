@@ -1,0 +1,19 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "a1": { "type": "announcement", "settings": { "text": "100% authentic, factory-sealed Pokémon TCG", "link": "" } },
+        "a2": { "type": "announcement", "settings": { "text": "Every order ships in protective, collector-safe packaging", "link": "" } }
+      },
+      "block_order": ["a1", "a2"]
+    },
+    "header": {
+      "type": "header",
+      "settings": { "menu": "main-menu", "search_placeholder": "Search ETBs, premium collections, sets..." }
+    }
+  },
+  "order": ["announcement", "header"]
+}

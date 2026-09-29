@@ -1,0 +1,47 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Axia Collectibles",
+    "theme_version": "1.0.0",
+    "theme_author": "Axia Collectibles",
+    "theme_documentation_url": "https://axiacollectives.com",
+    "theme_support_url": "https://axiacollectives.com"
+  },
+  {
+    "name": "Brand",
+    "settings": [
+      { "type": "image_picker", "id": "logo", "label": "Logo" },
+      { "type": "range", "id": "logo_width", "label": "Logo width", "min": 60, "max": 260, "step": 10, "unit": "px", "default": 150 },
+      { "type": "image_picker", "id": "favicon", "label": "Favicon" }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      { "type": "color", "id": "color_primary", "label": "Primary blue (buttons, links)", "default": "#1f5eff" },
+      { "type": "color", "id": "color_dark", "label": "Dark blue (header, footer)", "default": "#0a1a44" },
+      { "type": "color", "id": "color_accent", "label": "Accent (badges, highlights)", "default": "#5ec8ff" },
+      { "type": "color", "id": "color_background", "label": "Page background", "default": "#f4f7ff" },
+      { "type": "color", "id": "color_text", "label": "Text", "default": "#0d1530" },
+      { "type": "color", "id": "color_sale", "label": "Sale badge", "default": "#ff4d6d" }
+    ]
+  },
+  {
+    "name": "Product cards",
+    "settings": [
+      { "type": "checkbox", "id": "card_show_vendor", "label": "Show vendor", "default": false },
+      { "type": "checkbox", "id": "card_quick_add", "label": "Show Add to cart button on cards", "default": true },
+      { "type": "range", "id": "low_stock_threshold", "label": "Show \"Only X left\" at or below", "min": 0, "max": 10, "step": 1, "default": 3 }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      { "type": "text", "id": "social_instagram", "label": "Instagram URL" },
+      { "type": "text", "id": "social_tiktok", "label": "TikTok URL" },
+      { "type": "text", "id": "social_youtube", "label": "YouTube URL" },
+      { "type": "text", "id": "social_discord", "label": "Discord invite URL" },
+      { "type": "text", "id": "social_whatnot", "label": "Whatnot URL" }
+    ]
+  }
+]

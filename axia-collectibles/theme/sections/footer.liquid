@@ -1,0 +1,52 @@
+<footer class="footer">
+  <div class="container footer__grid">
+    <div class="footer__brand">
+      <span class="logo-text logo-text--light"><span class="logo-text__mark">AXIA</span> Collectibles</span>
+      {%- if section.settings.about != blank -%}<div class="footer__about">{{ section.settings.about }}</div>{%- endif -%}
+      <ul class="footer__social">
+        {%- if settings.social_instagram != blank -%}<li><a href="{{ settings.social_instagram }}" target="_blank" rel="noopener">Instagram</a></li>{%- endif -%}
+        {%- if settings.social_tiktok != blank -%}<li><a href="{{ settings.social_tiktok }}" target="_blank" rel="noopener">TikTok</a></li>{%- endif -%}
+        {%- if settings.social_youtube != blank -%}<li><a href="{{ settings.social_youtube }}" target="_blank" rel="noopener">YouTube</a></li>{%- endif -%}
+        {%- if settings.social_discord != blank -%}<li><a href="{{ settings.social_discord }}" target="_blank" rel="noopener">Discord</a></li>{%- endif -%}
+        {%- if settings.social_whatnot != blank -%}<li><a href="{{ settings.social_whatnot }}" target="_blank" rel="noopener">Whatnot</a></li>{%- endif -%}
+      </ul>
+    </div>
+    {%- for block in section.blocks -%}
+      {%- assign menu = linklists[block.settings.menu] -%}
+      <div class="footer__col" {{ block.shopify_attributes }}>
+        <p class="footer__heading">{{ block.settings.heading | default: menu.title }}</p>
+        <ul>
+          {%- for link in menu.links -%}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}
+        </ul>
+      </div>
+    {%- endfor -%}
+  </div>
+  <div class="footer__bottom container">
+    <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. Pokémon and all related names are trademarks of Nintendo, Creatures Inc. and GAME FREAK inc. {{ shop.name }} is not affiliated with them.</p>
+    {%- if section.settings.show_payment -%}
+      <ul class="footer__payment">
+        {%- for type in shop.enabled_payment_types -%}<li>{{ type | payment_type_svg_tag }}</li>{%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "richtext", "id": "about", "label": "About text", "default": "<p>Authentic, factory-sealed Pokémon TCG for collectors and players.</p>" },
+    { "type": "checkbox", "id": "show_payment", "label": "Show payment icons", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu column",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading" },
+        { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" }
+      ]
+    }
+  ]
+}
+{% endschema %}

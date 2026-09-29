@@ -1,0 +1,13 @@
+<article class="container section page">
+  <header class="page-head">
+    <p class="card__type">{{ article.published_at | date: '%B %d, %Y' }}</p>
+    <h1 class="page-head__title">{{ article.title }}</h1>
+  </header>
+  {%- if article.image -%}<div class="article__image">{{ article.image | image_url: width: 1400 | image_tag: alt: article.title }}</div>{%- endif -%}
+  <div class="rte">{{ article.content }}</div>
+  <p><a href="{{ blog.url }}">&larr; Back to {{ blog.title }}</a></p>
+</article>
+
+{% schema %}
+{ "name": "Article" }
+{% endschema %}

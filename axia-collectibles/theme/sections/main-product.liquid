@@ -1,0 +1,148 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign is_preorder = false
+  if product.tags contains 'pre-order'
+    assign is_preorder = true
+  endif
+-%}
+<section class="container product">
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ routes.root_url }}">Home</a> <span>/</span>
+    {%- if collection -%}<a href="{{ collection.url }}">{{ collection.title }}</a> <span>/</span>{%- endif -%}
+    <span aria-current="page">{{ product.title }}</span>
+  </nav>
+
+  <div class="product__grid">
+    <div class="product__gallery" data-gallery>
+      <div class="product__main-media">
+        {%- if product.featured_media -%}
+          {{ product.featured_media | image_url: width: 1200 | image_tag: loading: 'eager', widths: '600,900,1200', sizes: '(min-width: 990px) 55vw, 100vw', alt: product.featured_media.alt | default: product.title }}
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
+        {%- endif -%}
+      </div>
+      {%- if product.media.size > 1 -%}
+        <div class="product__thumbs">
+          {%- for media in product.media -%}
+            <button type="button" class="product__thumb{% if forloop.first %} is-active{% endif %}" data-gallery-thumb="{{ media.preview_image | image_url: width: 1200 }}" aria-label="View image {{ forloop.index }}">
+              {{ media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: media.alt | default: product.title }}
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="product__info">
+      {%- if product.type != blank -%}<p class="product__type">{{ product.type }}</p>{%- endif -%}
+      <h1 class="product__title">{{ product.title }}</h1>
+      <div data-price>{% render 'price', product: product, variant: current_variant %}</div>
+
+      <p class="product__stock" data-stock>
+        {%- if current_variant.available -%}
+          {%- if is_preorder -%}
+            <span class="dot dot--blue"></span> Pre-order — ships on release
+          {%- elsif current_variant.inventory_management == 'shopify' and current_variant.inventory_quantity > 0 and current_variant.inventory_quantity <= settings.low_stock_threshold -%}
+            <span class="dot dot--amber"></span> Only {{ current_variant.inventory_quantity }} left in stock
+          {%- else -%}
+            <span class="dot dot--green"></span> In stock, ready to ship
+          {%- endif -%}
+        {%- else -%}
+          <span class="dot dot--red"></span> Sold out
+        {%- endif -%}
+      </p>
+
+      {%- form 'product', product, class: 'product__form' -%}
+        {%- unless product.has_only_default_variant -%}
+          <label class="field-label" for="Variant-{{ section.id }}">{{ product.options | join: ' / ' }}</label>
+          <select id="Variant-{{ section.id }}" name="id" class="select" data-variant-select>
+            {%- for variant in product.variants -%}
+              <option value="{{ variant.id }}" data-price="{{ variant.price | money }}" data-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money }}{% endif %}" data-available="{{ variant.available }}"{% if variant == current_variant %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>
+                {{ variant.title }}{% unless variant.available %} — Sold out{% endunless %}
+              </option>
+            {%- endfor -%}
+          </select>
+        {%- else -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
+        {%- endunless -%}
+
+        <div class="product__buy">
+          <div class="qty">
+            <button type="button" class="qty__btn" data-qty="-1" aria-label="Decrease quantity">&minus;</button>
+            <input class="qty__input" type="number" name="quantity" value="1" min="1"{% if current_variant.inventory_management == 'shopify' and current_variant.inventory_policy == 'deny' %} max="{{ current_variant.inventory_quantity }}"{% endif %} aria-label="Quantity">
+            <button type="button" class="qty__btn" data-qty="1" aria-label="Increase quantity">+</button>
+          </div>
+          <button type="submit" class="btn btn--lg btn--grow" data-add-button{% unless current_variant.available %} disabled{% endunless %}>
+            {%- if current_variant.available -%}{% if is_preorder %}Pre-order now{% else %}Add to cart{% endif %}{%- else -%}Sold out{%- endif -%}
+          </button>
+        </div>
+        {%- if section.settings.show_dynamic_checkout -%}
+          <div class="product__checkout">{{ form | payment_button }}</div>
+        {%- endif -%}
+      {%- endform -%}
+
+      <ul class="product__perks">
+        <li>{% render 'icon', icon: 'shield' %} 100% authentic &amp; factory sealed</li>
+        <li>{% render 'icon', icon: 'box' %} Shipped in protective, collector-safe packaging</li>
+        <li>{% render 'icon', icon: 'truck' %} {{ section.settings.shipping_note }}</li>
+      </ul>
+
+      {%- if product.description != blank -%}
+        <details class="product__details" open>
+          <summary>Description</summary>
+          <div class="rte">{{ product.description }}</div>
+        </details>
+      {%- endif -%}
+      <details class="product__details">
+        <summary>Shipping &amp; returns</summary>
+        <div class="rte">{{ section.settings.shipping_text }}</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+{%- if section.settings.show_related and collections.all.products_count > 1 -%}
+  <section class="section">
+    <div class="container">
+      <div class="section__head"><h2 class="section__title">You may also like</h2></div>
+      <div class="grid">
+        {%- assign shown = 0 -%}
+        {%- for item in collections.all.products -%}
+          {%- if item.id != product.id and shown < 4 -%}
+            {% render 'product-card', card_product: item %}
+            {%- assign shown = shown | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "image": {{ product.featured_media | image_url: width: 1200 | prepend: 'https:' | json }},
+    "description": {{ product.description | strip_html | json }},
+    "brand": { "@type": "Brand", "name": {{ product.vendor | json }} },
+    "offers": {
+      "@type": "Offer",
+      "price": {{ current_variant.price | divided_by: 100.0 | json }},
+      "priceCurrency": {{ cart.currency.iso_code | json }},
+      "availability": "https://schema.org/{% if current_variant.available %}InStock{% else %}OutOfStock{% endif %}",
+      "url": {{ request.origin | append: product.url | json }}
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": [
+    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show Buy it now / Shop Pay button", "default": true },
+    { "type": "text", "id": "shipping_note", "label": "Shipping note", "default": "Ships within 1–2 business days" },
+    { "type": "richtext", "id": "shipping_text", "label": "Shipping & returns text", "default": "<p>Orders ship within 1–2 business days with tracking. Sealed product is packed in bubble wrap inside a sturdy box. Because of the collectible nature of sealed product, all sales are final unless your item arrives damaged — contact us within 48 hours of delivery with photos and we'll make it right.</p>" },
+    { "type": "checkbox", "id": "show_related", "label": "Show \"You may also like\"", "default": true }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,57 @@
+{%- paginate collection.products by section.settings.per_page -%}
+<section class="container collection">
+  <header class="page-head">
+    <h1 class="page-head__title">{{ collection.title }}{% if current_tags %} <span class="page-head__tag">&mdash; {{ current_tags | join: ', ' | replace: '-', ' ' | capitalize }}</span>{% endif %}</h1>
+    {%- if collection.description != blank -%}<div class="rte page-head__desc">{{ collection.description }}</div>{%- endif -%}
+  </header>
+
+  <div class="toolbar">
+    {%- if section.settings.show_tags and collection.all_tags.size > 0 -%}
+      <div class="chips" aria-label="Filter">
+        <a class="chip{% unless current_tags %} is-active{% endunless %}" href="{{ collection.url }}">All</a>
+        {%- for tag in collection.all_tags -%}
+          {%- unless tag == 'new' -%}
+            {%- if current_tags contains tag -%}
+              <a class="chip is-active" href="{{ collection.url }}">{{ tag | replace: '-', ' ' | capitalize }}</a>
+            {%- else -%}
+              <a class="chip" href="{{ collection.url }}/{{ tag | handleize }}">{{ tag | replace: '-', ' ' | capitalize }}</a>
+            {%- endif -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+    <div class="toolbar__right">
+      <span class="toolbar__count">{{ collection.products_count }} {{ collection.products_count | pluralize: 'item', 'items' }}</span>
+      <label class="visually-hidden" for="SortBy">Sort by</label>
+      {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+      <select id="SortBy" class="select select--sm" data-sort>
+        {%- for option in collection.sort_options -%}
+          <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>
+        {%- endfor -%}
+      </select>
+    </div>
+  </div>
+
+  <div class="grid">
+    {%- for product in collection.products -%}
+      {% render 'product-card', card_product: product %}
+    {%- else -%}
+      <p class="empty">No products here yet — check back soon for restocks.</p>
+    {%- endfor -%}
+  </div>
+
+  {%- if paginate.pages > 1 -%}
+    <nav class="pagination" aria-label="Pagination">{{ paginate | default_pagination: next: 'Next &rarr;', previous: '&larr; Prev' }}</nav>
+  {%- endif -%}
+</section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "checkbox", "id": "show_tags", "label": "Show tag filter chips", "default": true }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,22 @@
+<section class="container section">
+  <header class="page-head"><h1 class="page-head__title">{{ blog.title }}</h1></header>
+  {%- paginate blog.articles by 12 -%}
+    <div class="grid grid--3">
+      {%- for article in blog.articles -%}
+        <article class="card">
+          {%- if article.image -%}<a class="card__media card__media--wide" href="{{ article.url }}">{{ article.image | image_url: width: 700 | image_tag: loading: 'lazy', alt: article.title }}</a>{%- endif -%}
+          <div class="card__body">
+            <p class="card__type">{{ article.published_at | date: '%b %d, %Y' }}</p>
+            <h2 class="card__title"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+            <p>{{ article.excerpt_or_content | strip_html | truncate: 140 }}</p>
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+    {%- if paginate.pages > 1 -%}<nav class="pagination">{{ paginate | default_pagination }}</nav>{%- endif -%}
+  {%- endpaginate -%}
+</section>
+
+{% schema %}
+{ "name": "Blog" }
+{% endschema %}

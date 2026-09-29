@@ -1,0 +1,18 @@
+<section class="container section">
+  <header class="page-head"><h1 class="page-head__title">Shop by collection</h1></header>
+  <div class="tiles">
+    {%- for collection in collections -%}
+      <a class="tile tile--image" href="{{ collection.url }}">
+        {%- if collection.featured_image -%}
+          {{ collection.featured_image | image_url: width: 500 | image_tag: loading: 'lazy', alt: collection.title }}
+        {%- endif -%}
+        <span class="tile__title">{{ collection.title }}</span>
+        <span class="tile__sub">{{ collection.products_count }} {{ collection.products_count | pluralize: 'item', 'items' }}</span>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Collections list" }
+{% endschema %}

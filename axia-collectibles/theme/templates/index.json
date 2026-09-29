@@ -1,0 +1,49 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "eyebrow": "Sealed Pokémon TCG",
+        "heading": "Collect the chase.",
+        "text": "<p>Elite Trainer Boxes, Ultra-Premium Collections and hard-to-find sealed product — 100% authentic and packed with care.</p>",
+        "button_label": "Shop all",
+        "button_link": "shopify://collections/all",
+        "button2_label": "Ultra-Premium Collections",
+        "button2_link": "/collections/all/ultra-premium-collection"
+      }
+    },
+    "trust": {
+      "type": "trust-bar",
+      "blocks": {
+        "t1": { "type": "item", "settings": { "icon": "shield", "title": "100% authentic", "text": "Factory-sealed from trusted sources" } },
+        "t2": { "type": "item", "settings": { "icon": "box", "title": "Collector-safe packing", "text": "Bubble-wrapped and double-boxed" } },
+        "t3": { "type": "item", "settings": { "icon": "truck", "title": "Fast shipping", "text": "Ships in 1–2 business days" } },
+        "t4": { "type": "item", "settings": { "icon": "star", "title": "Secure checkout", "text": "Shop Pay, Apple Pay & more" } }
+      },
+      "block_order": ["t1", "t2", "t3", "t4"]
+    },
+    "categories": {
+      "type": "category-tiles",
+      "blocks": {
+        "c1": { "type": "tile", "settings": { "title": "Elite Trainer Boxes", "subtitle": "ETBs from every era", "link": "/collections/all/elite-trainer-box", "icon": "box" } },
+        "c2": { "type": "tile", "settings": { "title": "Ultra-Premium Collections", "subtitle": "The centerpiece boxes", "link": "/collections/all/ultra-premium-collection", "icon": "star" } },
+        "c3": { "type": "tile", "settings": { "title": "Scarlet & Violet", "subtitle": "Current era sealed", "link": "/collections/all/scarlet-violet", "icon": "pokeball" } },
+        "c4": { "type": "tile", "settings": { "title": "Sword & Shield", "subtitle": "Vintage-modern classics", "link": "/collections/all/sword-shield", "icon": "shield" } }
+      },
+      "block_order": ["c1", "c2", "c3", "c4"],
+      "settings": { "heading": "Shop by category" }
+    },
+    "featured": {
+      "type": "featured-products",
+      "settings": { "heading": "Fresh in stock", "limit": 8 }
+    },
+    "about": {
+      "type": "rich-text",
+      "settings": {
+        "heading": "Collectors first",
+        "text": "<p>Axia Collectibles is run by collectors. Every box is authentic, factory-sealed and packed the way we'd want our own collection shipped — so it arrives shelf-ready.</p>"
+      }
+    }
+  },
+  "order": ["hero", "trust", "categories", "featured", "about"]
+}

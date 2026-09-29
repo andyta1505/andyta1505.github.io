@@ -1,0 +1,48 @@
+<section class="hero">
+  <div class="hero__glow" aria-hidden="true"></div>
+  <div class="container hero__inner">
+    <div class="hero__copy">
+      {%- if section.settings.eyebrow != blank -%}<p class="hero__eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h1 class="hero__title">{{ section.settings.heading }}</h1>
+      {%- if section.settings.text != blank -%}<div class="hero__text">{{ section.settings.text }}</div>{%- endif -%}
+      <div class="hero__actions">
+        {%- if section.settings.button_label != blank -%}
+          <a class="btn btn--lg" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label }}</a>
+        {%- endif -%}
+        {%- if section.settings.button2_label != blank -%}
+          <a class="btn btn--lg btn--ghost" href="{{ section.settings.button2_link | default: routes.all_products_collection_url }}">{{ section.settings.button2_label }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+    <div class="hero__media">
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'eager', widths: '600,900,1200', sizes: '(min-width: 990px) 50vw, 100vw' }}
+      {%- elsif section.settings.product != blank and section.settings.product.featured_media -%}
+        <a href="{{ section.settings.product.url }}">
+          {{ section.settings.product.featured_media | image_url: width: 1000 | image_tag: loading: 'eager', widths: '500,800,1000', alt: section.settings.product.title }}
+        </a>
+      {%- else -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder' }}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero banner",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Sealed Pokémon TCG" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Collect the chase." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Elite Trainer Boxes, Ultra-Premium Collections and hard-to-find sealed product — 100% authentic and packed with care.</p>" },
+    { "type": "text", "id": "button_label", "label": "Primary button label", "default": "Shop all" },
+    { "type": "url", "id": "button_link", "label": "Primary button link" },
+    { "type": "text", "id": "button2_label", "label": "Secondary button label", "default": "Ultra-Premium Collections" },
+    { "type": "url", "id": "button2_link", "label": "Secondary button link" },
+    { "type": "header", "content": "Image" },
+    { "type": "image_picker", "id": "image", "label": "Image", "info": "Leave empty to show the featured product's photo instead." },
+    { "type": "product", "id": "product", "label": "Featured product" }
+  ],
+  "presets": [{ "name": "Hero banner" }]
+}
+{% endschema %}

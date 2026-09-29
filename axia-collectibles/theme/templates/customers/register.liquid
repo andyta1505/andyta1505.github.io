@@ -1,0 +1,16 @@
+<section class="container section auth">
+  <h1 class="page-head__title">Create account</h1>
+  {%- form 'create_customer' -%}
+    {{ form.errors | default_errors }}
+    <label class="field-label" for="FirstName">First name</label>
+    <input class="input" type="text" id="FirstName" name="customer[first_name]" autocomplete="given-name">
+    <label class="field-label" for="LastName">Last name</label>
+    <input class="input" type="text" id="LastName" name="customer[last_name]" autocomplete="family-name">
+    <label class="field-label" for="Email">Email</label>
+    <input class="input" type="email" id="Email" name="customer[email]" autocomplete="email" required>
+    <label class="field-label" for="Password">Password</label>
+    <input class="input" type="password" id="Password" name="customer[password]" autocomplete="new-password" required>
+    <label class="checkbox"><input type="checkbox" name="customer[accepts_marketing]" checked> Email me about restocks and new drops</label>
+    <button class="btn btn--block" type="submit">Create account</button>
+  {%- endform -%}
+</section>

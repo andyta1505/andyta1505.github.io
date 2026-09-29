@@ -1,0 +1,48 @@
+{%- liquid
+  assign variant = card_product.selected_or_first_available_variant
+  assign on_sale = false
+  if card_product.compare_at_price > card_product.price
+    assign on_sale = true
+  endif
+  assign low_stock = false
+  if card_product.available and variant.inventory_management == 'shopify' and variant.inventory_quantity > 0 and variant.inventory_quantity <= settings.low_stock_threshold
+    assign low_stock = true
+  endif
+-%}
+<article class="card">
+  <a class="card__media" href="{{ card_product.url }}">
+    {%- if card_product.featured_media -%}
+      {{ card_product.featured_media | image_url: width: 600 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 25vw, 50vw', widths: '300,450,600', alt: card_product.featured_media.alt | default: card_product.title }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
+    {%- endif -%}
+    <div class="card__badges">
+      {%- unless card_product.available -%}
+        <span class="badge badge--soldout">Sold out</span>
+      {%- else -%}
+        {%- if on_sale -%}<span class="badge badge--sale">Sale</span>{%- endif -%}
+        {%- if card_product.tags contains 'pre-order' -%}<span class="badge badge--preorder">Pre-order</span>{%- endif -%}
+        {%- if card_product.tags contains 'new' -%}<span class="badge badge--new">New</span>{%- endif -%}
+      {%- endunless -%}
+    </div>
+  </a>
+  <div class="card__body">
+    {%- if settings.card_show_vendor -%}<p class="card__vendor">{{ card_product.vendor }}</p>{%- endif -%}
+    {%- if card_product.type != blank -%}<p class="card__type">{{ card_product.type }}</p>{%- endif -%}
+    <h3 class="card__title"><a href="{{ card_product.url }}">{{ card_product.title }}</a></h3>
+    {% render 'price', product: card_product, use_range: true %}
+    {%- if low_stock -%}<p class="card__stock">Only {{ variant.inventory_quantity }} left</p>{%- endif -%}
+    {%- if settings.card_quick_add -%}
+      {%- if card_product.available and card_product.has_only_default_variant -%}
+        {%- form 'product', card_product, class: 'card__form' -%}
+          <input type="hidden" name="id" value="{{ variant.id }}">
+          <button type="submit" class="btn btn--block">{% if card_product.tags contains 'pre-order' %}Pre-order{% else %}Add to cart{% endif %}</button>
+        {%- endform -%}
+      {%- elsif card_product.available -%}
+        <a class="btn btn--block btn--outline" href="{{ card_product.url }}">Choose options</a>
+      {%- else -%}
+        <button class="btn btn--block" type="button" disabled>Sold out</button>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</article>

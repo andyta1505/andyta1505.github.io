@@ -1,0 +1,38 @@
+<section class="trust">
+  <div class="container trust__grid">
+    {%- for block in section.blocks -%}
+      <div class="trust__item" {{ block.shopify_attributes }}>
+        <span class="trust__icon">{% render 'icon', icon: block.settings.icon %}</span>
+        <div>
+          <p class="trust__title">{{ block.settings.title }}</p>
+          <p class="trust__text">{{ block.settings.text }}</p>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trust bar",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "default": "shield", "options": [
+          { "value": "shield", "label": "Shield" },
+          { "value": "truck", "label": "Truck" },
+          { "value": "box", "label": "Box" },
+          { "value": "star", "label": "Star" },
+          { "value": "pokeball", "label": "Ball" }
+        ] },
+        { "type": "text", "id": "title", "label": "Title", "default": "100% authentic" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Factory-sealed, sourced from trusted distributors." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Trust bar" }]
+}
+{% endschema %}

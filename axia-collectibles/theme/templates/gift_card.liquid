@@ -1,0 +1,20 @@
+{% layout none %}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your {{ gift_card.balance | money }} gift card – {{ shop.name }}</title>
+  {{ 'axia.css' | asset_url | stylesheet_tag }}
+  {{ content_for_header }}
+</head>
+<body>
+  <main class="container section empty-state">
+    <p class="card__type">{{ shop.name }} gift card</p>
+    <h1 class="page-head__title">{{ gift_card.balance | money }}</h1>
+    {%- if gift_card.enabled == false or gift_card.expired -%}<p>This gift card is no longer active.</p>{%- endif -%}
+    <p class="gift-code">{{ gift_card.code | format_code }}</p>
+    <a class="btn" href="{{ shop.url }}">Start shopping</a>
+  </main>
+</body>
+</html>

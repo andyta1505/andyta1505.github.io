@@ -1,0 +1,22 @@
+<section class="container section auth">
+  <h1 class="page-head__title">Log in</h1>
+  {%- form 'customer_login' -%}
+    {{ form.errors | default_errors }}
+    <label class="field-label" for="Email">Email</label>
+    <input class="input" type="email" id="Email" name="customer[email]" autocomplete="email" required>
+    <label class="field-label" for="Password">Password</label>
+    <input class="input" type="password" id="Password" name="customer[password]" autocomplete="current-password" required>
+    <button class="btn btn--block" type="submit">Sign in</button>
+    <p class="auth__links"><a href="#recover" data-toggle-recover>Forgot your password?</a> · <a href="{{ routes.account_register_url }}">Create account</a></p>
+  {%- endform -%}
+  <div id="recover" class="auth__recover">
+    <h2 class="section__title">Reset your password</h2>
+    {%- form 'recover_customer_password' -%}
+      {{ form.errors | default_errors }}
+      {%- if form.posted_successfully? -%}<p>We've sent you an email with a link to reset your password.</p>{%- endif -%}
+      <label class="field-label" for="RecoverEmail">Email</label>
+      <input class="input" type="email" id="RecoverEmail" name="email" required>
+      <button class="btn btn--outline" type="submit">Send reset link</button>
+    {%- endform -%}
+  </div>
+</section>
