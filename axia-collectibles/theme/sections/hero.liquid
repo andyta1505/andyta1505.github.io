@@ -17,16 +17,75 @@
     <div class="hero__media">
       {%- if section.settings.image != blank -%}
         {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'eager', widths: '600,900,1200', sizes: '(min-width: 990px) 50vw, 100vw' }}
-      {%- elsif section.settings.product != blank and section.settings.product.featured_media -%}
-        <a href="{{ section.settings.product.url }}">
-          {{ section.settings.product.featured_media | image_url: width: 1000 | image_tag: loading: 'eager', widths: '500,800,1000', alt: section.settings.product.title }}
-        </a>
       {%- else -%}
-        {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder' }}
+        {%- liquid
+          assign allowed = 'elite-trainer-box,ultra-premium-collection,super-premium-collection' | split: ','
+          assign slide_count = 0
+        -%}
+        {%- capture rotator_slides -%}
+          {%- for product in collections.all.products limit: 50 -%}
+            {%- unless product.featured_media -%}{%- continue -%}{%- endunless -%}
+            {%- assign match = false -%}
+            {%- for t in allowed -%}
+              {%- if product.tags contains t -%}{%- assign match = true -%}{%- break -%}{%- endif -%}
+            {%- endfor -%}
+            {%- unless match -%}{%- continue -%}{%- endunless -%}
+            <a href="{{ product.url }}" class="hero-rotator__slide{% if slide_count == 0 %} is-active{% endif %}"{% if slide_count > 0 %} aria-hidden="true" tabindex="-1"{% endif %}>
+              {{ product.featured_media | image_url: width: 1000 | image_tag: loading: 'eager', widths: '500,800,1000', alt: product.title }}
+              <span class="hero-rotator__label">
+                <span class="hero-rotator__title">{{ product.title | remove: 'Pokémon TCG: ' }}</span>
+                <span class="hero-rotator__price">{{ product.price | money }}</span>
+              </span>
+            </a>
+            {%- assign slide_count = slide_count | plus: 1 -%}
+          {%- endfor -%}
+        {%- endcapture -%}
+        {%- if slide_count > 0 -%}
+          <div class="hero-rotator" data-interval="{{ section.settings.rotate_interval | default: 10 | times: 1000 }}">
+            {{ rotator_slides }}
+          </div>
+        {%- elsif section.settings.product != blank and section.settings.product.featured_media -%}
+          <a href="{{ section.settings.product.url }}">
+            {{ section.settings.product.featured_media | image_url: width: 1000 | image_tag: loading: 'eager', widths: '500,800,1000', alt: section.settings.product.title }}
+          </a>
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder' }}
+        {%- endif -%}
       {%- endif -%}
     </div>
   </div>
 </section>
+
+{%- style -%}
+  .hero-rotator { position: relative; aspect-ratio: 1 / 1; max-width: 520px; margin-left: auto; }
+  .hero-rotator__slide { position: absolute; inset: 0; display: block; opacity: 0; visibility: hidden; transition: opacity .9s ease, visibility .9s ease; }
+  .hero-rotator__slide.is-active { opacity: 1; visibility: visible; }
+  .hero-rotator__slide img { width: 100%; height: 100%; object-fit: contain; padding: 24px; }
+  .hero-rotator__label { position: absolute; left: 50%; bottom: -14px; transform: translateX(-50%) rotate(-2deg); display: flex; align-items: center; gap: 10px; white-space: nowrap; background: rgba(10, 16, 32, .85); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,.14); color: #fff; border-radius: 999px; padding: 8px 16px; font-size: .82rem; box-shadow: 0 12px 30px rgba(0,0,0,.35); }
+  .hero-rotator__title { font-weight: 600; max-width: 300px; overflow: hidden; text-overflow: ellipsis; }
+  .hero-rotator__price { opacity: .85; }
+  @media (max-width: 989px) { .hero-rotator { margin: 0 auto; max-width: 420px; } }
+{%- endstyle -%}
+
+<script>
+  (function () {
+    var rot = document.querySelector('.hero-rotator');
+    if (!rot) return;
+    var slides = rot.querySelectorAll('.hero-rotator__slide');
+    if (slides.length < 2) return;
+    var i = 0;
+    var interval = parseInt(rot.getAttribute('data-interval'), 10) || 10000;
+    setInterval(function () {
+      slides[i].classList.remove('is-active');
+      slides[i].setAttribute('aria-hidden', 'true');
+      slides[i].setAttribute('tabindex', '-1');
+      i = (i + 1) % slides.length;
+      slides[i].classList.add('is-active');
+      slides[i].removeAttribute('aria-hidden');
+      slides[i].removeAttribute('tabindex');
+    }, interval);
+  })();
+</script>
 
 {% schema %}
 {
@@ -40,8 +99,9 @@
     { "type": "text", "id": "button2_label", "label": "Secondary button label", "default": "Ultra-Premium Collections" },
     { "type": "url", "id": "button2_link", "label": "Secondary button link" },
     { "type": "header", "content": "Image" },
-    { "type": "image_picker", "id": "image", "label": "Image", "info": "Leave empty to show the featured product's photo instead." },
-    { "type": "product", "id": "product", "label": "Featured product" }
+    { "type": "image_picker", "id": "image", "label": "Image", "info": "Leave empty to show a rotating showcase of ETBs, UPCs and SPCs from your inventory." },
+    { "type": "range", "id": "rotate_interval", "label": "Rotation speed (seconds)", "min": 5, "max": 30, "step": 1, "default": 10 },
+    { "type": "product", "id": "product", "label": "Fallback featured product", "info": "Shown only if no products match the showcase tags." }
   ],
   "presets": [{ "name": "Hero banner" }]
 }
